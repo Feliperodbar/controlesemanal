@@ -1,0 +1,127 @@
+{
+  "listName": "AtividadesQualidade",
+  "description": "Lista SharePoint para controle de atividades do time de Qualidade",
+  "columns": [
+    {
+      "internalName": "ID",
+      "displayName": "ID",
+      "type": "Counter",
+      "required": false,
+      "readOnly": true,
+      "description": "Identificador único gerado automaticamente pelo SharePoint"
+    },
+    {
+      "internalName": "Solicitante",
+      "displayName": "Solicitante",
+      "type": "Choice",
+      "required": false,
+      "choices": [],
+      "fillInChoice": true,
+      "description": "Picklist de solicitantes – valores pré-definidos e reutilizáveis pelo usuário"
+    },
+    {
+      "internalName": "Projeto",
+      "displayName": "Projeto",
+      "type": "Choice",
+      "required": false,
+      "choices": [],
+      "fillInChoice": true,
+      "description": "Picklist de projetos – valores pré-definidos e reutilizáveis pelo usuário"
+    },
+    {
+      "internalName": "Atividade",
+      "displayName": "Atividade",
+      "type": "Text",
+      "required": true,
+      "maxLength": 255,
+      "description": "Nome ou título da atividade"
+    },
+    {
+      "internalName": "Descricao",
+      "displayName": "Descrição",
+      "type": "Note",
+      "required": false,
+      "description": "Descrição detalhada da atividade"
+    },
+    {
+      "internalName": "Responsavel",
+      "displayName": "Responsável",
+      "type": "Text",
+      "required": false,
+      "maxLength": 255,
+      "description": "Nome do responsável pela atividade"
+    },
+    {
+      "internalName": "Data_Inicio_Previsto",
+      "displayName": "Data Início Previsto",
+      "type": "DateTime",
+      "required": false,
+      "format": "DateOnly",
+      "description": "Data de início planejada"
+    },
+    {
+      "internalName": "Data_Termino_Previsto",
+      "displayName": "Data Término Previsto",
+      "type": "DateTime",
+      "required": false,
+      "format": "DateOnly",
+      "description": "Data de conclusão planejada"
+    },
+    {
+      "internalName": "Data_Inicio_Real",
+      "displayName": "Data Início Real",
+      "type": "DateTime",
+      "required": false,
+      "format": "DateOnly",
+      "description": "Data em que a atividade foi realmente iniciada"
+    },
+    {
+      "internalName": "Data_Termino_Real",
+      "displayName": "Data Término Real",
+      "type": "DateTime",
+      "required": false,
+      "format": "DateOnly",
+      "description": "Data em que a atividade foi realmente concluída. Ao ser preenchida, o Status é automaticamente atualizado para Concluído."
+    },
+    {
+      "internalName": "Status",
+      "displayName": "Status",
+      "type": "Choice",
+      "required": true,
+      "choices": [
+        "Não iniciado",
+        "Em progresso",
+        "Concluído"
+      ],
+      "fillInChoice": false,
+      "defaultValue": "Não iniciado",
+      "description": "Status atual da atividade. Opções fixas: Não iniciado | Em progresso | Concluído"
+    }
+  ],
+  "views": [
+    {
+      "name": "Todas as Atividades",
+      "type": "Standard",
+      "columns": ["ID", "Atividade", "Projeto", "Solicitante", "Responsavel", "Status", "Data_Inicio_Previsto", "Data_Termino_Previsto"],
+      "defaultView": true
+    },
+    {
+      "name": "Em Andamento",
+      "type": "Standard",
+      "filter": "Status eq 'Em progresso'",
+      "columns": ["ID", "Atividade", "Projeto", "Responsavel", "Status", "Data_Termino_Previsto"]
+    },
+    {
+      "name": "Concluídas",
+      "type": "Standard",
+      "filter": "Status eq 'Concluído'",
+      "columns": ["ID", "Atividade", "Projeto", "Responsavel", "Data_Termino_Previsto", "Data_Termino_Real"]
+    },
+    {
+      "name": "Atrasadas",
+      "type": "Standard",
+      "filter": "Data_Termino_Previsto lt '[Today]' and Status ne 'Concluído'",
+      "columns": ["ID", "Atividade", "Projeto", "Responsavel", "Status", "Data_Termino_Previsto"]
+    }
+  ]
+}

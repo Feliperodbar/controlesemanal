@@ -1,0 +1,471 @@
+TelaDashboard As screen:
+    # ── Propriedades da tela ────────────────────────────────────────────────────
+    Fill: RGBA(245, 247, 250, 1)
+
+    # ── Cabeçalho ───────────────────────────────────────────────────────────────
+    retCabecalho As rectangle:
+        X: 0
+        Y: 0
+        Width: Parent.Width
+        Height: 70
+        Fill: RGBA(0, 102, 204, 1)
+
+    lblTituloDash As label:
+        Text: "Dashboard – Acompanhamento de Atividades"
+        X: 20
+        Y: 0
+        Width: Parent.Width - 180
+        Height: 70
+        Color: RGBA(255, 255, 255, 1)
+        Size: 20
+        FontWeight: FontWeight.Bold
+        VerticalAlign: VerticalAlign.Middle
+
+    btnVoltarDash As button:
+        Text: "← Voltar"
+        X: Parent.Width - 170
+        Y: 15
+        Width: 150
+        Height: 40
+        Fill: RGBA(255, 255, 255, 0.2)
+        Color: RGBA(255, 255, 255, 1)
+        BorderRadius: 6
+        OnSelect: |-
+            Navigate(TelaInicial, ScreenTransition.Back)
+
+    # ── Filtro de período (Data Início Previsto) ─────────────────────────────────
+    retFiltroDash As rectangle:
+        X: 0
+        Y: 70
+        Width: Parent.Width
+        Height: 55
+        Fill: RGBA(230, 240, 255, 1)
+
+    lblPeriodoDe As label:
+        Text: "Período – De:"
+        X: 15
+        Y: 82
+        Width: 100
+        Height: 30
+        VerticalAlign: VerticalAlign.Middle
+
+    dpPeriodoDe As datepicker:
+        SelectedDate: DateAdd(Today(), -30, TimeUnit.Days)
+        Format: DateTimeFormat.ShortDate
+        X: 120
+        Y: 80
+        Width: 160
+        Height: 36
+
+    lblPeriodoAte As label:
+        Text: "Até:"
+        X: 295
+        Y: 82
+        Width: 45
+        Height: 30
+        VerticalAlign: VerticalAlign.Middle
+
+    dpPeriodoAte As datepicker:
+        SelectedDate: Today()
+        Format: DateTimeFormat.ShortDate
+        X: 345
+        Y: 80
+        Width: 160
+        Height: 36
+
+    # ── Cards de resumo por Status ────────────────────────────────────────────────
+    # Card: Total
+    retCardTotal As rectangle:
+        X: 10
+        Y: 138
+        Width: 170
+        Height: 90
+        Fill: RGBA(200, 220, 255, 1)
+        BorderRadius: 10
+        DropShadow: DropShadow.Light
+
+    lblCardTotalTitulo As label:
+        Text: "Total"
+        X: 20
+        Y: 145
+        Width: 150
+        Height: 25
+        Size: 14
+        Color: RGBA(0, 60, 140, 1)
+        FontWeight: FontWeight.Bold
+
+    lblCardTotalValor As label:
+        Text: Text(CountRows(AtividadesQualidade))
+        X: 20
+        Y: 170
+        Width: 150
+        Height: 45
+        Size: 32
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 60, 140, 1)
+        Align: Align.Center
+
+    # Card: Não iniciado
+    retCardNaoIniciado As rectangle:
+        X: 195
+        Y: 138
+        Width: 170
+        Height: 90
+        Fill: RGBA(220, 220, 220, 1)
+        BorderRadius: 10
+        DropShadow: DropShadow.Light
+
+    lblCardNaoIniciadoTitulo As label:
+        Text: "Não iniciado"
+        X: 205
+        Y: 145
+        Width: 150
+        Height: 25
+        Size: 14
+        FontWeight: FontWeight.Bold
+        Color: RGBA(80, 80, 80, 1)
+
+    lblCardNaoIniciadoValor As label:
+        Text: |-
+            Text(CountRows(Filter(AtividadesQualidade, Status.Value = "Não iniciado")))
+        X: 205
+        Y: 170
+        Width: 150
+        Height: 45
+        Size: 32
+        FontWeight: FontWeight.Bold
+        Color: RGBA(80, 80, 80, 1)
+        Align: Align.Center
+
+    # Card: Em progresso
+    retCardEmProgresso As rectangle:
+        X: 380
+        Y: 138
+        Width: 170
+        Height: 90
+        Fill: RGBA(255, 230, 180, 1)
+        BorderRadius: 10
+        DropShadow: DropShadow.Light
+
+    lblCardEmProgressoTitulo As label:
+        Text: "Em progresso"
+        X: 390
+        Y: 145
+        Width: 150
+        Height: 25
+        Size: 14
+        FontWeight: FontWeight.Bold
+        Color: RGBA(140, 70, 0, 1)
+
+    lblCardEmProgressoValor As label:
+        Text: |-
+            Text(CountRows(Filter(AtividadesQualidade, Status.Value = "Em progresso")))
+        X: 390
+        Y: 170
+        Width: 150
+        Height: 45
+        Size: 32
+        FontWeight: FontWeight.Bold
+        Color: RGBA(140, 70, 0, 1)
+        Align: Align.Center
+
+    # Card: Concluído
+    retCardConcluido As rectangle:
+        X: 565
+        Y: 138
+        Width: 170
+        Height: 90
+        Fill: RGBA(180, 240, 200, 1)
+        BorderRadius: 10
+        DropShadow: DropShadow.Light
+
+    lblCardConcluidoTitulo As label:
+        Text: "Concluído"
+        X: 575
+        Y: 145
+        Width: 150
+        Height: 25
+        Size: 14
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 100, 40, 1)
+
+    lblCardConcluidoValor As label:
+        Text: |-
+            Text(CountRows(Filter(AtividadesQualidade, Status.Value = "Concluído")))
+        X: 575
+        Y: 170
+        Width: 150
+        Height: 45
+        Size: 32
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 100, 40, 1)
+        Align: Align.Center
+
+    # Card: % Concluídos
+    retCardPerc As rectangle:
+        X: 750
+        Y: 138
+        Width: 170
+        Height: 90
+        Fill: RGBA(200, 255, 220, 1)
+        BorderRadius: 10
+        DropShadow: DropShadow.Light
+
+    lblCardPercTitulo As label:
+        Text: "% Concluído"
+        X: 760
+        Y: 145
+        Width: 150
+        Height: 25
+        Size: 14
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 80, 30, 1)
+
+    lblCardPercValor As label:
+        Text: |-
+            If(
+                CountRows(AtividadesQualidade) = 0,
+                "0%",
+                Text(
+                    Round(
+                        CountRows(Filter(AtividadesQualidade, Status.Value = "Concluído")) /
+                        CountRows(AtividadesQualidade) * 100,
+                        0
+                    )
+                ) & "%"
+            )
+        X: 760
+        Y: 170
+        Width: 150
+        Height: 45
+        Size: 32
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 80, 30, 1)
+        Align: Align.Center
+
+    # ── Atividades por Projeto (tabela resumo) ────────────────────────────────────
+    lblTituloProjeto As label:
+        Text: "Atividades por Projeto"
+        X: 10
+        Y: 245
+        Width: 440
+        Height: 30
+        Size: 16
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 60, 140, 1)
+
+    galProjetos As gallery.galleryVertical:
+        Items: |-
+            AddColumns(
+                GroupBy(AtividadesQualidade, "Projeto", "Atividades"),
+                "Total",       CountRows(Atividades),
+                "Concluidos",  CountRows(Filter(Atividades, Status.Value = "Concluído")),
+                "Progresso",   CountRows(Filter(Atividades, Status.Value = "Em progresso")),
+                "NaoIniciados",CountRows(Filter(Atividades, Status.Value = "Não iniciado"))
+            )
+        X: 10
+        Y: 278
+        Width: 440
+        Height: 300
+        TemplateHeight: 45
+
+        retLinhaProjeto As rectangle:
+            X: 0
+            Y: 0
+            Width: Parent.TemplateWidth
+            Height: Parent.TemplateHeight
+            Fill: |-
+                RGBA(245, 248, 255, 1)
+
+        lblNomeProjeto As label:
+            Text: ThisItem.Projeto.Value
+            X: 5
+            Y: 5
+            Width: 160
+            Height: 35
+            Size: 13
+            FontWeight: FontWeight.Semibold
+
+        lblTotalProjeto As label:
+            Text: "Total: " & ThisItem.Total
+            X: 170
+            Y: 5
+            Width: 80
+            Height: 35
+            Size: 12
+
+        lblConcluidosProjeto As label:
+            Text: "✅ " & ThisItem.Concluidos
+            X: 255
+            Y: 5
+            Width: 60
+            Height: 35
+            Size: 12
+            Color: RGBA(0, 128, 0, 1)
+
+        lblProgressoProjeto As label:
+            Text: "🔄 " & ThisItem.Progresso
+            X: 320
+            Y: 5
+            Width: 60
+            Height: 35
+            Size: 12
+            Color: RGBA(204, 102, 0, 1)
+
+        lblNaoIniciadosProjeto As label:
+            Text: "⏸ " & ThisItem.NaoIniciados
+            X: 385
+            Y: 5
+            Width: 55
+            Height: 35
+            Size: 12
+            Color: RGBA(128, 128, 128, 1)
+
+    # ── Atividades por Responsável (tabela resumo) ─────────────────────────────
+    lblTituloResponsavel As label:
+        Text: "Atividades por Responsável"
+        X: 465
+        Y: 245
+        Width: 440
+        Height: 30
+        Size: 16
+        FontWeight: FontWeight.Bold
+        Color: RGBA(0, 60, 140, 1)
+
+    galResponsaveis As gallery.galleryVertical:
+        Items: |-
+            AddColumns(
+                GroupBy(AtividadesQualidade, "Responsavel", "AtividadesResp"),
+                "TotalResp",       CountRows(AtividadesResp),
+                "ConcluidosResp",  CountRows(Filter(AtividadesResp, Status.Value = "Concluído")),
+                "ProgressoResp",   CountRows(Filter(AtividadesResp, Status.Value = "Em progresso")),
+                "NaoIniciadosResp",CountRows(Filter(AtividadesResp, Status.Value = "Não iniciado"))
+            )
+        X: 465
+        Y: 278
+        Width: 440
+        Height: 300
+        TemplateHeight: 45
+
+        retLinhaResp As rectangle:
+            X: 0
+            Y: 0
+            Width: Parent.TemplateWidth
+            Height: Parent.TemplateHeight
+            Fill: RGBA(255, 255, 255, 1)
+
+        lblNomeResponsavel As label:
+            Text: ThisItem.Responsavel
+            X: 5
+            Y: 5
+            Width: 160
+            Height: 35
+            Size: 13
+            FontWeight: FontWeight.Semibold
+
+        lblTotalResp As label:
+            Text: "Total: " & ThisItem.TotalResp
+            X: 170
+            Y: 5
+            Width: 80
+            Height: 35
+            Size: 12
+
+        lblConcluidosResp As label:
+            Text: "✅ " & ThisItem.ConcluidosResp
+            X: 255
+            Y: 5
+            Width: 60
+            Height: 35
+            Size: 12
+            Color: RGBA(0, 128, 0, 1)
+
+        lblProgressoResp As label:
+            Text: "🔄 " & ThisItem.ProgressoResp
+            X: 320
+            Y: 5
+            Width: 60
+            Height: 35
+            Size: 12
+            Color: RGBA(204, 102, 0, 1)
+
+        lblNaoIniciadosResp As label:
+            Text: "⏸ " & ThisItem.NaoIniciadosResp
+            X: 385
+            Y: 5
+            Width: 55
+            Height: 35
+            Size: 12
+            Color: RGBA(128, 128, 128, 1)
+
+    # ── Lista de atividades atrasadas ─────────────────────────────────────────
+    lblTituloAtrasadas As label:
+        Text: "⚠️ Atividades Atrasadas (término previsto no passado, não concluídas)"
+        X: 10
+        Y: 590
+        Width: Parent.Width - 20
+        Height: 30
+        Size: 14
+        FontWeight: FontWeight.Bold
+        Color: RGBA(180, 0, 0, 1)
+
+    galAtrasadas As gallery.galleryVertical:
+        Items: |-
+            Filter(
+                AtividadesQualidade,
+                Data_Termino_Previsto < Today() &&
+                Status.Value <> "Concluído"
+            )
+        X: 10
+        Y: 625
+        Width: Parent.Width - 20
+        Height: Parent.Height - 640
+        TemplateHeight: 40
+
+        retLinhaAtrasada As rectangle:
+            X: 0
+            Y: 0
+            Width: Parent.TemplateWidth
+            Height: Parent.TemplateHeight
+            Fill: RGBA(255, 235, 235, 1)
+
+        lblAtrasadaID As label:
+            Text: "#" & ThisItem.ID
+            X: 5
+            Y: 5
+            Width: 40
+            Height: 30
+            Size: 12
+
+        lblAtrasadaAtividade As label:
+            Text: ThisItem.Atividade
+            X: 50
+            Y: 5
+            Width: 250
+            Height: 30
+            Size: 12
+
+        lblAtrasadaProjeto As label:
+            Text: ThisItem.Projeto.Value
+            X: 305
+            Y: 5
+            Width: 150
+            Height: 30
+            Size: 12
+
+        lblAtrasadaResponsavel As label:
+            Text: ThisItem.Responsavel
+            X: 460
+            Y: 5
+            Width: 150
+            Height: 30
+            Size: 12
+
+        lblAtrasadaTermino As label:
+            Text: Text(ThisItem.Data_Termino_Previsto, "dd/MM/yyyy")
+            X: 615
+            Y: 5
+            Width: 120
+            Height: 30
+            Size: 12
+            Color: RGBA(180, 0, 0, 1)
