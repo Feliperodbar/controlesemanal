@@ -8,18 +8,18 @@ Um **kit completo e pronto para implementar** um Canvas App profissional no Powe
 
 ### ✅ Entregáveis
 
-| Arquivo | Páginas | Propósito | Leia quando |
-|---------|---------|----------|------------|
-| **README.md** | 6 | Visão geral completa | Primeira coisa |
-| **QUICKSTART.md** | 7 | Guia rápido 3 passos | Quero começar já |
-| **FASE-1-SHAREPOINT.md** | 6 | Criar lista SharePoint | Implementação fase 1 |
-| **FASE-2-4-CANVAS-APP.md** | 8 | Build do app | Implementação fases 2-4 |
-| **FASE-5-POWER-AUTOMATE.md** | 5 | Automação | Implementação fase 5 |
-| **FASE-6-DASHBOARD.md** | 6 | Gráficos e KPIs | Implementação fase 6 |
-| **FORMULAS-POWER-FX.md** | 6 | 50+ snippets prontos | Quando precisar fórmulas |
-| **GUIA-SEGURANCA-ISOLAMENTO.md** | 8 | Isolamento de dados | Validar segurança |
-| **CHECKLIST-TESTES.md** | 12 | 38 testes validação | Antes de go-live |
-| **ESTRUTURA-FINAL.md** | 2 | Este arquivo | Visualizar projeto |
+| Arquivo                          | Páginas | Propósito              | Leia quando              |
+| -------------------------------- | ------- | ---------------------- | ------------------------ |
+| **README.md**                    | 6       | Visão geral completa   | Primeira coisa           |
+| **QUICKSTART.md**                | 7       | Guia rápido 3 passos   | Quero começar já         |
+| **FASE-1-SHAREPOINT.md**         | 6       | Criar lista SharePoint | Implementação fase 1     |
+| **FASE-2-4-CANVAS-APP.md**       | 8       | Build do app           | Implementação fases 2-4  |
+| **FASE-5-POWER-AUTOMATE.md**     | 5       | Automação              | Implementação fase 5     |
+| **FASE-6-DASHBOARD.md**          | 6       | Gráficos e KPIs        | Implementação fase 6     |
+| **FORMULAS-POWER-FX.md**         | 6       | 50+ snippets prontos   | Quando precisar fórmulas |
+| **GUIA-SEGURANCA-ISOLAMENTO.md** | 8       | Isolamento de dados    | Validar segurança        |
+| **CHECKLIST-TESTES.md**          | 12      | 38 testes validação    | Antes de go-live         |
+| **ESTRUTURA-FINAL.md**           | 2       | Este arquivo           | Visualizar projeto       |
 
 **Total**: ~64 páginas de documentação, exemplos e guias
 
@@ -28,6 +28,7 @@ Um **kit completo e pronto para implementar** um Canvas App profissional no Powe
 ## 🏗️ Arquitetura do Projeto
 
 ### **Camada 1: Dados (SharePoint)**
+
 ```
 Lista: Atividades_Qualidade
 ├─ ID (auto-incremento)
@@ -40,6 +41,7 @@ Lista: Atividades_Qualidade
 ```
 
 ### **Camada 2: Lógica de Negócio (Power Automate)**
+
 ```
 Fluxo 1: Auto_Incremento_ID
   Trigger: Item criado → Gera ID sequencial (1, 2, 3...)
@@ -49,6 +51,7 @@ Fluxo 2: Auto_Status_Concludido
 ```
 
 ### **Camada 3: Interface (Canvas App)**
+
 ```
 Tela 1: HomePage
   ├─ Gallery (isolada: User() = Responsável)
@@ -76,6 +79,7 @@ Tela 4: DashboardRelatorios
 ```
 
 ### **Camada 4: Segurança**
+
 ```
 Isolamento de Dados
   ├─ Gallery: Filter(..., Responsável.Email = User().Email)
@@ -132,6 +136,7 @@ Permissões
 ## 🎯 Funcionalidades Implementadas
 
 ### Homepage
+
 - ✅ Gallery com lista de atividades (isolada por user)
 - ✅ Filtro por Status
 - ✅ Filtro por Projeto
@@ -140,6 +145,7 @@ Permissões
 - ✅ Navegação para Dashboard
 
 ### Formulários
+
 - ✅ Novo: Pré-preenche Responsável = User() logado
 - ✅ Novo: Status = "Não iniciado" por padrão
 - ✅ Editar: Responsável readonly (não muda)
@@ -150,10 +156,12 @@ Permissões
 - ✅ Botões: Salvar (SubmitForm) | Cancelar (Reset + Back)
 
 ### Automação (Power Automate)
+
 - ✅ Fluxo 1: Auto-incremento ID (1, 2, 3...)
 - ✅ Fluxo 2: Auto-update Status → "Concluído" quando Data_Real preenchida
 
 ### Dashboard
+
 - ✅ KPI 1: Total de Atividades
 - ✅ KPI 2: Atividades Concluídas
 - ✅ KPI 3: % Conclusão
@@ -165,6 +173,7 @@ Permissões
 - ✅ Navegação: Voltar para HomePage
 
 ### Segurança
+
 - ✅ Isolamento: Cada user vê APENAS suas atividades
 - ✅ Edição: Bloqueada para atividades de outros
 - ✅ Deleção: Bloqueada para atividades de outros
@@ -178,19 +187,19 @@ Permissões
 
 ### Lista SharePoint: Atividades_Qualidade
 
-| # | Coluna | Tipo | Editável | Obrigatório | Default |
-|---|--------|------|----------|-------------|---------|
-| 1 | **ID** | Número | Não* | Sim | Gerado fluxo |
-| 2 | **Solicitante** | Choice | Sim | Não | - |
-| 3 | **Projeto** | Choice | Sim | Sim | - |
-| 4 | **Atividade** | Single line | Sim | Sim | - |
-| 5 | **Descrição** | Multiple | Sim | Não | - |
-| 6 | **Responsável** | Person | Sim* | Sim | User() |
-| 7 | **Data_Inicio_Previsto** | Date | Sim | Não | - |
-| 8 | **Data_Termino_Previsto** | Date | Sim | Não | - |
-| 9 | **Data_Inicio_Real** | Date | Sim | Não | - |
-| 10 | **Data_Termino_Real** | Date | Sim | Não | - |
-| 11 | **Status** | Choice | Sim* | Sim | Não iniciado |
+| #   | Coluna                    | Tipo        | Editável | Obrigatório | Default      |
+| --- | ------------------------- | ----------- | -------- | ----------- | ------------ |
+| 1   | **ID**                    | Número      | Não\*    | Sim         | Gerado fluxo |
+| 2   | **Solicitante**           | Choice      | Sim      | Não         | -            |
+| 3   | **Projeto**               | Choice      | Sim      | Sim         | -            |
+| 4   | **Atividade**             | Single line | Sim      | Sim         | -            |
+| 5   | **Descrição**             | Multiple    | Sim      | Não         | -            |
+| 6   | **Responsável**           | Person      | Sim\*    | Sim         | User()       |
+| 7   | **Data_Inicio_Previsto**  | Date        | Sim      | Não         | -            |
+| 8   | **Data_Termino_Previsto** | Date        | Sim      | Não         | -            |
+| 9   | **Data_Inicio_Real**      | Date        | Sim      | Não         | -            |
+| 10  | **Data_Termino_Real**     | Date        | Sim      | Não         | -            |
+| 11  | **Status**                | Choice      | Sim\*    | Sim         | Não iniciado |
 
 *ID e Status gerenciados por automação  
 *Responsável readonly ao editar no app
@@ -201,13 +210,13 @@ Permissões
 
 ### Permissões por Ação
 
-| Ação | Seu próprio | De outro | Admin (v2) |
-|------|-----------|----------|-----------|
-| **Ver** lista | ✅ | ❌ | ⏳ |
-| **Criar** | ✅ | ❌ | ✅ |
-| **Editar** | ✅ | ❌ | ✅ |
-| **Deletar** | ✅ | ❌ | ✅ |
-| **Ver Dashboard** | ✅ isolado | ❌ | ⏳ |
+| Ação              | Seu próprio | De outro | Admin (v2) |
+| ----------------- | ----------- | -------- | ---------- |
+| **Ver** lista     | ✅          | ❌       | ⏳         |
+| **Criar**         | ✅          | ❌       | ✅         |
+| **Editar**        | ✅          | ❌       | ✅         |
+| **Deletar**       | ✅          | ❌       | ✅         |
+| **Ver Dashboard** | ✅ isolado  | ❌       | ⏳         |
 
 ### Implementação
 
@@ -233,17 +242,20 @@ formNova.Fields.Responsável.Update({
 ## 📚 Como Começar
 
 ### Opção A: Devagar (recomendado para learners)
+
 1. Leia [README.md](README.md) (15 min)
 2. Leia [QUICKSTART.md](QUICKSTART.md) (10 min)
 3. Comece [FASE-1-SHAREPOINT.md](FASE-1-SHAREPOINT.md) (2 horas)
 4. Continue fase por fase
 
 ### Opção B: Rápido (já conhece Power Apps)
+
 1. Skip para [FASE-1-SHAREPOINT.md](FASE-1-SHAREPOINT.md)
 2. Use [FORMULAS-POWER-FX.md](FORMULAS-POWER-FX.md) para copy/paste
 3. Rode [CHECKLIST-TESTES.md](CHECKLIST-TESTES.md)
 
 ### Opção C: Delegar para Dev
+
 1. Repasse todos os .md
 2. Dev segue fases passo-a-passo
 3. Você valida com [CHECKLIST-TESTES.md](CHECKLIST-TESTES.md)
@@ -276,22 +288,26 @@ Ao final você terá medido:
 ## 🚀 O Que Você Pode Fazer Agora
 
 ### Neste Momento
+
 - [ ] Fazer download/clone deste repositório
 - [ ] Ler [README.md](README.md)
 - [ ] Ler [QUICKSTART.md](QUICKSTART.md)
 - [ ] Começar [FASE-1-SHAREPOINT.md](FASE-1-SHAREPOINT.md)
 
 ### Próximas Horas
+
 - [ ] Criar lista do SharePoint
 - [ ] Copiar 11 colunas
 - [ ] Configurar permissões
 
 ### Próximos Dias
+
 - [ ] Construir Canvas App (4 telas)
 - [ ] Conectar dados
 - [ ] Implementar filtros
 
 ### Próximas Semanas
+
 - [ ] Power Automate (fluxos)
 - [ ] Dashboard
 - [ ] Testes
@@ -317,7 +333,7 @@ Ao final você terá medido:
 ✅ Power Fx (fórmulas)  
 ✅ Isolamento multi-usuário  
 ✅ Dashboard design  
-✅ Testes de aplicação  
+✅ Testes de aplicação
 
 **Parabéns! Você agora pode construir apps profissionais no Power Apps!** 🎉
 
@@ -336,14 +352,14 @@ Ao final você terá medido:
 
 ## 🎊 Status Final
 
-| Item | Status |
-|------|--------|
-| Documentação | ✅ Completa (64 págs) |
-| Fórmulas | ✅ 50+ snippets prontos |
-| Guias | ✅ Passo-a-passo todas fases |
-| Testes | ✅ 38 testes de validação |
-| Segurança | ✅ Isolamento implementado |
-| Pronto para usar | ✅ SIM |
+| Item             | Status                       |
+| ---------------- | ---------------------------- |
+| Documentação     | ✅ Completa (64 págs)        |
+| Fórmulas         | ✅ 50+ snippets prontos      |
+| Guias            | ✅ Passo-a-passo todas fases |
+| Testes           | ✅ 38 testes de validação    |
+| Segurança        | ✅ Isolamento implementado   |
+| Pronto para usar | ✅ SIM                       |
 
 ---
 
