@@ -1,0 +1,24 @@
+App As appinfo:
+    # Evento executado ao iniciar o aplicativo
+    OnStart: |-
+        // Inicializa variáveis globais
+        Set(varModoFormulario, "Novo");
+        Set(varItemSelecionado, Blank());
+
+        // Carrega opções fixas de Status
+        Set(
+            colStatus,
+            [
+                {Value: "Não iniciado"},
+                {Value: "Em progresso"},
+                {Value: "Concluído"}
+            ]
+        );
+
+        // Inicializa filtros da tela inicial
+        Set(varFiltroStatus, "Todos");
+        Set(varFiltroProjeto, "Todos");
+        Set(varFiltroResponsavel, "");
+
+    # Dimensões padrão do App
+    MinScreenWidth: 320

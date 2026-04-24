@@ -1,0 +1,384 @@
+TelaFormulario As screen:
+    # ── Propriedades da tela ────────────────────────────────────────────────────
+    Fill: RGBA(245, 247, 250, 1)
+
+    # ── Cabeçalho ───────────────────────────────────────────────────────────────
+    retCabecalho As rectangle:
+        X: 0
+        Y: 0
+        Width: Parent.Width
+        Height: 70
+        Fill: RGBA(0, 102, 204, 1)
+
+    lblTituloForm As label:
+        Text: |-
+            If(varModoFormulario = "Novo", "Nova Atividade", "Editar Atividade")
+        X: 20
+        Y: 0
+        Width: Parent.Width - 20
+        Height: 70
+        Color: RGBA(255, 255, 255, 1)
+        Size: 20
+        FontWeight: FontWeight.Bold
+        VerticalAlign: VerticalAlign.Middle
+
+    # ── Formulário principal ─────────────────────────────────────────────────────
+    formAtividade As editform:
+        DataSource: AtividadesQualidade
+        Item: |-
+            If(varModoFormulario = "Editar", varItemSelecionado, Blank())
+        DefaultMode: |-
+            If(varModoFormulario = "Novo", FormMode.New, FormMode.Edit)
+        X: 10
+        Y: 80
+        Width: Parent.Width - 20
+        Height: Parent.Height - 145
+        Columns: 2
+
+        # ── Campo: ID (somente leitura) ──────────────────────────────────────
+        DataCard_ID As typedDataCard.number:
+            FieldName: "ID"
+            DisplayMode: DisplayMode.View
+            X: 0
+            Y: 0
+            Width: (Parent.Width / 2) - 10
+            Height: 80
+
+            lblID_Label As label:
+                Text: "ID"
+                Y: 0
+                Height: 22
+                Size: 13
+                Color: RGBA(100, 100, 100, 1)
+
+            lblID_Valor As label:
+                Text: |-
+                    If(
+                        varModoFormulario = "Novo",
+                        "(gerado automaticamente)",
+                        Text(varItemSelecionado.ID)
+                    )
+                Y: 22
+                Height: 40
+                Size: 14
+                Color: RGBA(100, 100, 100, 1)
+
+        # ── Campo: Atividade ─────────────────────────────────────────────────
+        DataCard_Atividade As typedDataCard.text:
+            FieldName: "Atividade"
+            Required: true
+            X: (Parent.Width / 2)
+            Y: 0
+            Width: (Parent.Width / 2) - 10
+            Height: 80
+
+            lblAtividade_Label As label:
+                Text: "Atividade *"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            txtAtividade As textinput:
+                Default: Parent.Default
+                Y: 22
+                Height: 40
+                HintText: "Nome/título da atividade"
+
+        # ── Campo: Solicitante (Choice – picklist gerenciado pelo usuário) ────
+        DataCard_Solicitante As typedDataCard.text:
+            FieldName: "Solicitante"
+            X: 0
+            Y: 85
+            Width: (Parent.Width / 2) - 10
+            Height: 80
+
+            lblSolicitante_Label As label:
+                Text: "Solicitante"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            # ComboBox permite selecionar valores existentes e adicionar novos
+            cmbSolicitante As combobox:
+                Items: Choices([@AtividadesQualidade].Solicitante)
+                DefaultSelectedItems: |-
+                    If(
+                        varModoFormulario = "Editar",
+                        Filter(
+                            Choices([@AtividadesQualidade].Solicitante),
+                            Value = varItemSelecionado.Solicitante.Value
+                        ),
+                        []
+                    )
+                SearchEnabled: true
+                Y: 22
+                Height: 40
+
+        # ── Campo: Projeto (Choice – picklist gerenciado pelo usuário) ────────
+        DataCard_Projeto As typedDataCard.text:
+            FieldName: "Projeto"
+            X: (Parent.Width / 2)
+            Y: 85
+            Width: (Parent.Width / 2) - 10
+            Height: 80
+
+            lblProjeto_Label As label:
+                Text: "Projeto"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            cmbProjeto As combobox:
+                Items: Choices([@AtividadesQualidade].Projeto)
+                DefaultSelectedItems: |-
+                    If(
+                        varModoFormulario = "Editar",
+                        Filter(
+                            Choices([@AtividadesQualidade].Projeto),
+                            Value = varItemSelecionado.Projeto.Value
+                        ),
+                        []
+                    )
+                SearchEnabled: true
+                Y: 22
+                Height: 40
+
+        # ── Campo: Responsável ────────────────────────────────────────────────
+        DataCard_Responsavel As typedDataCard.text:
+            FieldName: "Responsavel"
+            X: 0
+            Y: 170
+            Width: (Parent.Width / 2) - 10
+            Height: 80
+
+            lblResponsavel_Label As label:
+                Text: "Responsável"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            txtResponsavel As textinput:
+                Default: Parent.Default
+                Y: 22
+                Height: 40
+                HintText: "Nome do responsável"
+
+        # ── Campo: Status (Choice – opções fixas) ─────────────────────────────
+        DataCard_Status As typedDataCard.text:
+            FieldName: "Status"
+            X: (Parent.Width / 2)
+            Y: 170
+            Width: (Parent.Width / 2) - 10
+            Height: 80
+            # Update property picks up override when Data_Termino_Real is filled
+            Update: |-
+                If(
+                    !IsBlank(DataCard_DataTerminoReal.dpDataTerminoReal.SelectedDate),
+                    {Value: "Concluído"},
+                    ddStatus.Selected
+                )
+
+            lblStatus_Label As label:
+                Text: "Status"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            ddStatus As dropdown:
+                Items: |-
+                    ["Não iniciado", "Em progresso", "Concluído"]
+                Default: |-
+                    If(
+                        varModoFormulario = "Novo",
+                        "Não iniciado",
+                        varItemSelecionado.Status.Value
+                    )
+                Y: 22
+                Height: 40
+
+        # ── Campo: Descrição ─────────────────────────────────────────────────
+        DataCard_Descricao As typedDataCard.text:
+            FieldName: "Descricao"
+            X: 0
+            Y: 255
+            Width: Parent.Width - 10
+            Height: 110
+
+            lblDescricao_Label As label:
+                Text: "Descrição"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            txtDescricao As textinput:
+                Default: Parent.Default
+                Y: 22
+                Height: 80
+                Mode: TextMode.MultiLine
+                HintText: "Detalhe a atividade..."
+
+        # ── Campo: Data Início Previsto ───────────────────────────────────────
+        DataCard_DataInicioPrev As typedDataCard.dateTime:
+            FieldName: "Data_Inicio_Previsto"
+            X: 0
+            Y: 370
+            Width: (Parent.Width / 2) - 10
+            Height: 90
+
+            lblDataInicioPrev_Label As label:
+                Text: "Data Início Previsto"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            dpDataInicioPrev As datepicker:
+                SelectedDate: |-
+                    If(
+                        varModoFormulario = "Editar" &&
+                        !IsBlank(varItemSelecionado.Data_Inicio_Previsto),
+                        varItemSelecionado.Data_Inicio_Previsto,
+                        Blank()
+                    )
+                Format: DateTimeFormat.ShortDate
+                Y: 22
+                Height: 40
+
+        # ── Campo: Data Término Previsto ──────────────────────────────────────
+        DataCard_DataTerminoPrev As typedDataCard.dateTime:
+            FieldName: "Data_Termino_Previsto"
+            X: (Parent.Width / 2)
+            Y: 370
+            Width: (Parent.Width / 2) - 10
+            Height: 90
+
+            lblDataTerminoPrev_Label As label:
+                Text: "Data Término Previsto"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            dpDataTerminoPrev As datepicker:
+                SelectedDate: |-
+                    If(
+                        varModoFormulario = "Editar" &&
+                        !IsBlank(varItemSelecionado.Data_Termino_Previsto),
+                        varItemSelecionado.Data_Termino_Previsto,
+                        Blank()
+                    )
+                Format: DateTimeFormat.ShortDate
+                Y: 22
+                Height: 40
+
+        # ── Campo: Data Início Real ───────────────────────────────────────────
+        DataCard_DataInicioReal As typedDataCard.dateTime:
+            FieldName: "Data_Inicio_Real"
+            X: 0
+            Y: 465
+            Width: (Parent.Width / 2) - 10
+            Height: 90
+
+            lblDataInicioReal_Label As label:
+                Text: "Data Início Real"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            dpDataInicioReal As datepicker:
+                SelectedDate: |-
+                    If(
+                        varModoFormulario = "Editar" &&
+                        !IsBlank(varItemSelecionado.Data_Inicio_Real),
+                        varItemSelecionado.Data_Inicio_Real,
+                        Blank()
+                    )
+                Format: DateTimeFormat.ShortDate
+                Y: 22
+                Height: 40
+
+        # ── Campo: Data Término Real ──────────────────────────────────────────
+        DataCard_DataTerminoReal As typedDataCard.dateTime:
+            FieldName: "Data_Termino_Real"
+            X: (Parent.Width / 2)
+            Y: 465
+            Width: (Parent.Width / 2) - 10
+            Height: 90
+
+            lblDataTerminoReal_Label As label:
+                Text: "Data Término Real"
+                Y: 0
+                Height: 22
+                Size: 13
+
+            dpDataTerminoReal As datepicker:
+                SelectedDate: |-
+                    If(
+                        varModoFormulario = "Editar" &&
+                        !IsBlank(varItemSelecionado.Data_Termino_Real),
+                        varItemSelecionado.Data_Termino_Real,
+                        Blank()
+                    )
+                Format: DateTimeFormat.ShortDate
+                Y: 22
+                Height: 40
+
+    # ── Botões de ação ──────────────────────────────────────────────────────────
+    retBotoesRodape As rectangle:
+        X: 0
+        Y: Parent.Height - 65
+        Width: Parent.Width
+        Height: 65
+        Fill: RGBA(230, 240, 255, 1)
+
+    btnSalvar As button:
+        Text: "💾 Salvar"
+        X: Parent.Width - 230
+        Y: Parent.Height - 52
+        Width: 110
+        Height: 40
+        Fill: RGBA(0, 153, 76, 1)
+        Color: RGBA(255, 255, 255, 1)
+        BorderRadius: 6
+        # ── Regra automática: Se Data_Termino_Real preenchida → Status = Concluído
+        OnSelect: |-
+            // Se Data_Termino_Real foi preenchida, força Status = Concluído
+            If(
+                !IsBlank(DataCard_DataTerminoReal.dpDataTerminoReal.SelectedDate),
+                UpdateContext({locStatusOverride: "Concluído"}),
+                UpdateContext({locStatusOverride: DataCard_Status.ddStatus.Selected})
+            );
+            // Submete o formulário com o status correto
+            SubmitForm(formAtividade);
+            If(
+                formAtividade.Error = "",
+                Navigate(TelaInicial, ScreenTransition.Back),
+                Notify(formAtividade.Error, NotificationType.Error)
+            )
+
+    btnCancelar As button:
+        Text: "✖ Cancelar"
+        X: Parent.Width - 115
+        Y: Parent.Height - 52
+        Width: 105
+        Height: 40
+        Fill: RGBA(200, 50, 50, 1)
+        Color: RGBA(255, 255, 255, 1)
+        BorderRadius: 6
+        OnSelect: |-
+            ResetForm(formAtividade);
+            Navigate(TelaInicial, ScreenTransition.Back)
+
+    btnVoltar As button:
+        Text: "← Voltar"
+        X: 10
+        Y: Parent.Height - 52
+        Width: 100
+        Height: 40
+        Fill: RGBA(200, 200, 200, 1)
+        BorderRadius: 6
+        OnSelect: |-
+            ResetForm(formAtividade);
+            Navigate(TelaInicial, ScreenTransition.Back)
+
+    # ── Evento OnSuccess do formulário (regra automática de Status) ─────────────
+    # Observação: Configurar OnSuccess do EditForm para atualizar Status se
+    # Data_Termino_Real foi preenchida. A lógica está aplicada no botão Salvar.

@@ -1,0 +1,326 @@
+TelaInicial As screen:
+    # ── Propriedades da tela ────────────────────────────────────────────────────
+    Fill: RGBA(245, 247, 250, 1)
+
+    # ── Cabeçalho ───────────────────────────────────────────────────────────────
+    retCabecalho As rectangle:
+        X: 0
+        Y: 0
+        Width: Parent.Width
+        Height: 70
+        Fill: RGBA(0, 102, 204, 1)
+
+    lblTitulo As label:
+        Text: "Controle de Atividades – Quality Team"
+        X: 20
+        Y: 0
+        Width: Parent.Width - 220
+        Height: 70
+        Color: RGBA(255, 255, 255, 1)
+        Size: 20
+        FontWeight: FontWeight.Bold
+        VerticalAlign: VerticalAlign.Middle
+
+    btnNovo As button:
+        Text: "+ Nova Atividade"
+        X: Parent.Width - 210
+        Y: 15
+        Width: 190
+        Height: 40
+        Fill: RGBA(0, 153, 76, 1)
+        Color: RGBA(255, 255, 255, 1)
+        BorderRadius: 6
+        OnSelect: |-
+            Set(varModoFormulario, "Novo");
+            Set(varItemSelecionado, Blank());
+            Navigate(TelaFormulario, ScreenTransition.Slide)
+
+    # ── Painel de Filtros ────────────────────────────────────────────────────────
+    retFiltros As rectangle:
+        X: 0
+        Y: 70
+        Width: Parent.Width
+        Height: 60
+        Fill: RGBA(230, 240, 255, 1)
+
+    lblFiltroStatus As label:
+        Text: "Status:"
+        X: 15
+        Y: 80
+        Width: 60
+        Height: 40
+        VerticalAlign: VerticalAlign.Middle
+
+    ddFiltroStatus As dropdown:
+        # Opções: "Todos" + valores fixos de status
+        Items: |-
+            ["Todos", "Não iniciado", "Em progresso", "Concluído"]
+        X: 80
+        Y: 82
+        Width: 160
+        Height: 36
+        OnChange: |-
+            Set(varFiltroStatus, ddFiltroStatus.SelectedText.Value)
+
+    lblFiltroProjeto As label:
+        Text: "Projeto:"
+        X: 255
+        Y: 80
+        Width: 65
+        Height: 40
+        VerticalAlign: VerticalAlign.Middle
+
+    ddFiltroProjeto As dropdown:
+        # Projetos disponíveis: "Todos" + valores únicos cadastrados na lista
+        Items: |-
+            Distinct(
+                AddColumns(
+                    [
+                        {Value: "Todos"}
+                    ],
+                    "Value", Value
+                ),
+                Value
+            )
+        # Fonte real: Distinct([@AtividadesQualidade], Projeto)
+        X: 325
+        Y: 82
+        Width: 180
+        Height: 36
+        OnChange: |-
+            Set(varFiltroProjeto, ddFiltroProjeto.SelectedText.Value)
+
+    lblFiltroResponsavel As label:
+        Text: "Responsável:"
+        X: 520
+        Y: 80
+        Width: 100
+        Height: 40
+        VerticalAlign: VerticalAlign.Middle
+
+    txtFiltroResponsavel As textinput:
+        Default: ""
+        HintText: "Filtrar por responsável..."
+        X: 625
+        Y: 82
+        Width: 200
+        Height: 36
+        OnChange: |-
+            Set(varFiltroResponsavel, txtFiltroResponsavel.Text)
+
+    btnLimparFiltros As button:
+        Text: "Limpar Filtros"
+        X: 840
+        Y: 82
+        Width: 130
+        Height: 36
+        Fill: RGBA(200, 200, 200, 1)
+        BorderRadius: 6
+        OnSelect: |-
+            Set(varFiltroStatus, "Todos");
+            Set(varFiltroProjeto, "Todos");
+            Set(varFiltroResponsavel, "");
+            Reset(ddFiltroStatus);
+            Reset(ddFiltroProjeto);
+            Reset(txtFiltroResponsavel)
+
+    # ── Cabeçalho das colunas do Gallery ────────────────────────────────────────
+    retHeaderGallery As rectangle:
+        X: 10
+        Y: 138
+        Width: Parent.Width - 20
+        Height: 36
+        Fill: RGBA(0, 102, 204, 1)
+        BorderRadius: 4
+
+    lblHeaderID As label:
+        Text: "ID"
+        X: 18
+        Y: 140
+        Width: 50
+        Height: 32
+        Color: White
+        FontWeight: FontWeight.Bold
+
+    lblHeaderAtividade As label:
+        Text: "Atividade"
+        X: 75
+        Y: 140
+        Width: 200
+        Height: 32
+        Color: White
+        FontWeight: FontWeight.Bold
+
+    lblHeaderProjeto As label:
+        Text: "Projeto"
+        X: 280
+        Y: 140
+        Width: 150
+        Height: 32
+        Color: White
+        FontWeight: FontWeight.Bold
+
+    lblHeaderResponsavel As label:
+        Text: "Responsável"
+        X: 435
+        Y: 140
+        Width: 150
+        Height: 32
+        Color: White
+        FontWeight: FontWeight.Bold
+
+    lblHeaderStatus As label:
+        Text: "Status"
+        X: 590
+        Y: 140
+        Width: 130
+        Height: 32
+        Color: White
+        FontWeight: FontWeight.Bold
+
+    lblHeaderDataTermino As label:
+        Text: "Término Previsto"
+        X: 725
+        Y: 140
+        Width: 140
+        Height: 32
+        Color: White
+        FontWeight: FontWeight.Bold
+
+    # ── Gallery de atividades ────────────────────────────────────────────────────
+    galAtividades As gallery.galleryVertical:
+        # Fonte de dados filtrada conforme variáveis de filtro
+        Items: |-
+            Filter(
+                AtividadesQualidade,
+                (varFiltroStatus = "Todos" || Status.Value = varFiltroStatus),
+                (varFiltroProjeto = "Todos" || Projeto.Value = varFiltroProjeto),
+                (varFiltroResponsavel = "" || Responsavel = varFiltroResponsavel)
+            )
+        X: 10
+        Y: 175
+        Width: Parent.Width - 20
+        Height: Parent.Height - 185
+        TemplateHeight: 56
+        TemplatePadding: 2
+
+        # ── Linha de fundo alternada ──────────────────────────────────────────
+        retLinhaFundo As rectangle:
+            X: 0
+            Y: 0
+            Width: Parent.TemplateWidth
+            Height: Parent.TemplateHeight
+            Fill: |-
+                If(
+                    Mod(ThisItem.ID, 2) = 0,
+                    RGBA(245, 245, 245, 1),
+                    RGBA(255, 255, 255, 1)
+                )
+
+        # ── Campos exibidos ───────────────────────────────────────────────────
+        lblID As label:
+            Text: Text(ThisItem.ID)
+            X: 8
+            Y: 10
+            Width: 50
+            Height: 36
+            Size: 14
+
+        lblAtividade As label:
+            Text: ThisItem.Atividade
+            X: 65
+            Y: 10
+            Width: 210
+            Height: 36
+            Size: 14
+
+        lblProjeto As label:
+            Text: ThisItem.Projeto.Value
+            X: 280
+            Y: 10
+            Width: 150
+            Height: 36
+            Size: 14
+
+        lblResponsavel As label:
+            Text: ThisItem.Responsavel
+            X: 435
+            Y: 10
+            Width: 150
+            Height: 36
+            Size: 14
+
+        lblStatus As label:
+            Text: ThisItem.Status.Value
+            X: 590
+            Y: 6
+            Width: 130
+            Height: 44
+            Size: 12
+            FontWeight: FontWeight.Bold
+            Color: |-
+                Switch(
+                    ThisItem.Status.Value,
+                    "Concluído",    RGBA(0, 128, 0, 1),
+                    "Em progresso", RGBA(204, 102, 0, 1),
+                    "Não iniciado", RGBA(128, 128, 128, 1),
+                    RGBA(0, 0, 0, 1)
+                )
+
+        lblDataTermino As label:
+            Text: |-
+                If(
+                    IsBlank(ThisItem.Data_Termino_Previsto),
+                    "–",
+                    Text(ThisItem.Data_Termino_Previsto, "dd/MM/yyyy")
+                )
+            X: 725
+            Y: 10
+            Width: 140
+            Height: 36
+            Size: 14
+
+        # ── Botão Editar ──────────────────────────────────────────────────────
+        btnEditar As button:
+            Text: "✏️ Editar"
+            X: Parent.TemplateWidth - 105
+            Y: 10
+            Width: 95
+            Height: 36
+            Fill: RGBA(0, 102, 204, 1)
+            Color: RGBA(255, 255, 255, 1)
+            BorderRadius: 4
+            Size: 12
+            OnSelect: |-
+                Set(varModoFormulario, "Editar");
+                Set(varItemSelecionado, ThisItem);
+                Navigate(TelaFormulario, ScreenTransition.Slide)
+
+    # ── Rodapé com link para Dashboard ──────────────────────────────────────────
+    btnDashboard As button:
+        Text: "📊 Ver Dashboard"
+        X: 10
+        Y: Parent.Height - 50
+        Width: 160
+        Height: 40
+        Fill: RGBA(0, 102, 204, 1)
+        Color: White
+        BorderRadius: 6
+        Visible: false
+        # Habilitar quando TelaDashboard estiver conectada:
+        # OnSelect: Navigate(TelaDashboard, ScreenTransition.Fade)
+
+    lblRodape As label:
+        Text: |-
+            "Total: " & CountRows(AtividadesQualidade) &
+            " | Concluídos: " &
+            CountRows(Filter(AtividadesQualidade, Status.Value = "Concluído")) &
+            " | Em progresso: " &
+            CountRows(Filter(AtividadesQualidade, Status.Value = "Em progresso"))
+        X: 0
+        Y: Parent.Height - 30
+        Width: Parent.Width
+        Height: 30
+        Align: Align.Center
+        Size: 12
+        Fill: RGBA(230, 240, 255, 1)
